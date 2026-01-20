@@ -1,0 +1,9 @@
+.DS_Store
+.gradle/
+build/
+libs/
+test_permission.txt
+*.log
+*.iml
+.idea/
+out/

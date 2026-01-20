@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "safari",
+  "version": "${version}",
+  "name": "Safari Dimension",
+  "description": "A daily resetting Safari dimension for Cobblemon.",
+  "authors": [
+    "Opencode"
+  ],
+  "contact": {
+    "homepage": "https://example.com/",
+    "sources": "https://github.com/example/safari"
+  },
+  "license": "MIT",
+  "icon": "assets/safari/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.safari.SafariMod"
+    ]
+  },
+  "mixins": [
+    "safari.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "cobblemon": ">=1.6",
+    "cobblemon-economy": "*"
+  }
+}
