@@ -3,7 +3,8 @@
   "package": "com.safari.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinPokeBallCaptureCalculatedEvent"
+    "MixinPokeBallCaptureCalculatedEvent",
+    "MixinSendOutPokemonHandler"
   ],
   "injectors": {
     "defaultRequire": 1

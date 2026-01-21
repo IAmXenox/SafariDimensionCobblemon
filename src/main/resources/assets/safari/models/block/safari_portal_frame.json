@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "minecraft:block/obsidian"
+    "all": "safari:block/safari_portal_frame"
   }
 }

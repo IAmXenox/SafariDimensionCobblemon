@@ -2,6 +2,7 @@ package com.safari.world;
 
 import com.safari.config.SafariConfig;
 import com.safari.state.SafariWorldState;
+import com.safari.session.SafariSessionManager;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -9,87 +10,118 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.block.Blocks;
+import net.minecraft.structure.StructureTemplate;
+import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3i;
+import com.safari.SafariMod;
+import net.minecraft.util.WorldSavePath;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.IOException;
 
 import java.util.Random;
 
 public class SafariWorldManager {
 
     public static void performDailyReset(ServerWorld safariWorld) {
-        // 1. Update Date
-        SafariWorldState.get().resetDailySeed(); // This updates date and raw coordinates
-        
-        // 2. Find a better spot based on Biomes
-        findAndSetSafeSpot(safariWorld);
+        // 1. Delete dimension folder to force regeneration
+        deleteDimensionFolder(safariWorld);
 
-        // 3. Place a small spawn structure
-        placeSpawnStructure(safariWorld);
+        // 2. Update Date + Seed
+        SafariWorldState.get().resetDailySeed();
+
+        // 3. Find a better spot based on Biomes
+        findAndSetSafeSpot(safariWorld);
+    }
+
+    public static void performDailyResetWithEvacuation(ServerWorld safariWorld) {
+        for (var player : new java.util.ArrayList<>(safariWorld.getPlayers())) {
+            SafariSessionManager.endSession(player);
+            player.sendMessage(net.minecraft.text.Text.of("§cSafari reset: you have been evacuated."), false);
+        }
+        performDailyReset(safariWorld);
     }
 
     public static void findAndSetSafeSpot(ServerWorld world) {
-        Random rand = new Random();
-        int originX = SafariWorldState.get().centerX;
-        int originZ = SafariWorldState.get().centerZ;
-        
-        int attempt = 0;
-        int maxAttempts = 50;
-        
-        while (attempt < maxAttempts) {
-            // Check current spot
-            BlockPos pos = new BlockPos(originX, 64, originZ);
-            if (isValidBiome(world, pos)) {
-                // Found it!
-                SafariWorldState.get().centerX = originX;
-                SafariWorldState.get().centerZ = originZ;
-                SafariWorldState.get().save();
-                
-                updateBorder(world, originX, originZ);
-                placeSpawnStructure(world);
-                return;
-            }
-            
-            // Move 500 blocks and try again
-            originX += (rand.nextBoolean() ? 500 : -500);
-            originZ += (rand.nextBoolean() ? 500 : -500);
-            attempt++;
-        }
-        
-        // If we fail, just accept the last one, but at least we tried.
-        SafariWorldState.get().centerX = originX;
-        SafariWorldState.get().centerZ = originZ;
+        SafariWorldState.get().centerX = 0;
+        SafariWorldState.get().centerZ = 0;
         SafariWorldState.get().save();
-        updateBorder(world, originX, originZ);
+        updateBorder(world, 0, 0);
         placeSpawnStructure(world);
     }
 
     public static void placeSpawnStructure(ServerWorld world) {
-        int x = SafariWorldState.get().centerX;
-        int z = SafariWorldState.get().centerZ;
-        int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
+        int centerX = SafariWorldState.get().centerX;
+        int centerZ = SafariWorldState.get().centerZ;
+        int y = SafariConfig.get().safariSpawnY;
 
-        // 11x11 grass patch with a small oak "marker"
-        for (int dx = -5; dx <= 5; dx++) {
-            for (int dz = -5; dz <= 5; dz++) {
-                BlockPos base = new BlockPos(x + dx, y - 1, z + dz);
+        Identifier structureId = Identifier.of(SafariConfig.get().spawnStructureId);
+        StructureTemplate template = world.getStructureTemplateManager().getTemplateOrBlank(structureId);
+        Vec3i size = template.getSize();
+
+        if (size.getX() == 0 || size.getY() == 0 || size.getZ() == 0) {
+            SafariMod.LOGGER.warn("Safari spawn structure '{}' not found or empty. Using fallback grass patch.", structureId);
+            placeFallbackGrass(world, centerX, y, centerZ);
+            return;
+        }
+
+        // Center the structure at (centerX, centerZ)
+        int originX = centerX - (size.getX() / 2);
+        int originZ = centerZ - (size.getZ() / 2);
+        BlockPos origin = new BlockPos(originX, y, originZ);
+
+        StructurePlacementData placement = new StructurePlacementData();
+        placement.setIgnoreEntities(true);
+
+        template.place(world, origin, origin, placement, world.getRandom(), 2);
+    }
+
+    private static void placeFallbackGrass(ServerWorld world, int centerX, int y, int centerZ) {
+        for (int dx = -20; dx <= 20; dx++) {
+            for (int dz = -20; dz <= 20; dz++) {
+                BlockPos base = new BlockPos(centerX + dx, y - 1, centerZ + dz);
                 world.setBlockState(base, Blocks.GRASS_BLOCK.getDefaultState());
                 BlockPos above = base.up();
-                if (world.getBlockState(above).isAir() && world.random.nextFloat() < 0.2f) {
-                    world.setBlockState(above, Blocks.GRASS.getDefaultState());
+                if (!world.getBlockState(above).isAir()) continue;
+
+                float roll = world.random.nextFloat();
+                if (roll < 0.15f) {
+                    // Tall grass (two blocks)
+                    BlockPos upper = above.up();
+                    if (world.getBlockState(upper).isAir()) {
+                        world.setBlockState(above, Blocks.TALL_GRASS.getDefaultState().with(net.minecraft.block.TallPlantBlock.HALF, net.minecraft.block.enums.DoubleBlockHalf.LOWER));
+                        world.setBlockState(upper, Blocks.TALL_GRASS.getDefaultState().with(net.minecraft.block.TallPlantBlock.HALF, net.minecraft.block.enums.DoubleBlockHalf.UPPER));
+                    }
+                } else if (roll < 0.45f) {
+                    world.setBlockState(above, Blocks.SHORT_GRASS.getDefaultState());
                 }
             }
         }
+    }
 
-        // Simple oak marker (log + leaves)
-        BlockPos trunk = new BlockPos(x, y, z);
-        world.setBlockState(trunk, Blocks.OAK_LOG.getDefaultState());
-        world.setBlockState(trunk.up(), Blocks.OAK_LOG.getDefaultState());
-        world.setBlockState(trunk.up(2), Blocks.OAK_LOG.getDefaultState());
+    public static void deleteDimensionFolder(ServerWorld world) {
+        try {
+            Path root = world.getServer().getSavePath(WorldSavePath.ROOT).resolve("dimensions");
+            Identifier id = world.getRegistryKey().getValue();
+            Path dimPath = root.resolve(id.getNamespace()).resolve(id.getPath());
 
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                if (Math.abs(dx) + Math.abs(dz) <= 3) {
-                    world.setBlockState(trunk.up(3).add(dx, 0, dz), Blocks.OAK_LEAVES.getDefaultState());
-                }
+            // Save world chunks before deletion
+            world.getChunkManager().save(true);
+
+            if (Files.exists(dimPath)) {
+                Files.walk(dimPath)
+                        .sorted((a, b) -> b.compareTo(a))
+                        .forEach(path -> {
+                            try {
+                                Files.deleteIfExists(path);
+                            } catch (IOException ignored) {
+                            }
+                        });
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

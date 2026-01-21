@@ -1,7 +1,7 @@
 {
   "type": "safari:safari",
   "generator": {
-    "type": "minecraft:noise",
+    "type": "safari:safari_noise",
     "settings": "minecraft:overworld",
     "biome_source": {
       "type": "minecraft:multi_noise",

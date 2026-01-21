@@ -1,34 +1,36 @@
 # Safari Dimension Mod
 
-A custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a "Safari Zone" dimension with daily resets, economy integration, and custom capture mechanics.
+Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a daily‑resetting Safari dimension with portal access, economy integration, and Safari‑style captures.
 
 ## Features
 
-- **Safari Dimension:** A dedicated dimension that resets its generation seed every day at midnight (Europe/Paris).
-- **Session System:** 25-minute sessions with inventory sandboxing (your items are saved/restored, you get a Safari Kit).
-- **Custom Capture:** No battles allowed! Throw Safari Balls directly. Catch rates are calculated based on species rarity (Common 22%, Uncommon 15%, Rare 8%).
-- **Economy Integration:** Entry fee (500 Pokédollars) and ability to buy more balls/time.
-- **Safety:** Prevents falling/void damage on entry, handles disconnects/deaths gracefully.
+- **Safari Dimension** with a custom chunk generator seeded daily.
+- **Daily reset** (00:00 Europe/Paris) with automatic evacuation and dimension folder wipe.
+- **Portal frame** block (Nether‑style size detection) lit by flint & steel.
+- **Safari Ball item** (`safari:safari_ball`) with Cobblemon throw physics and sounds.
+- **No send‑out** inside Safari (prevents battles).
+- **Spawn structure** placed at `(0, 0)` in the sky each reset.
+- **World border** 2000x2000 centered on `(0,0)`.
+- **World‑specific config** stored in each world save.
 
 ## Dependencies
 
 Place these jars in your `mods` folder:
 1. `fabric-api`
-2. `cobblemon` (1.7+)
+2. `cobblemon` (1.7.1)
 3. `cobblemon-economy`
-4. `academy` (for the Safari Ball item)
 
 ## Configuration
 
-The config file is located at `config/safari-config.json`.
-It is generated on first launch.
+World‑specific config file:
+`world/<your-world>/safari-config.json`
 
-### Default Config
+Default values:
 ```json
 {
-  "sessionTimeMinutes": 25,
+  "sessionTimeMinutes": 2,
   "initialSafariBalls": 25,
-  "safariBallItem": "cobblemon:safari_ball",
+  "safariBallItem": "safari:safari_ball",
   "carryOverSafariBalls": false,
   "logoutClearInventory": true,
   "allowMultiplayerSessions": true,
@@ -36,12 +38,16 @@ It is generated on first launch.
   "pack5BallsPrice": 150,
   "pack10BallsPrice": 250,
   "maxBallsPurchasable": 20,
-  "commonCatchRate": 0.22,
-  "uncommonCatchRate": 0.15,
-  "rareCatchRate": 0.08,
+  "commonCatchRate": 0.45,
+  "uncommonCatchRate": 0.18,
+  "rareCatchRate": 0.1,
   "resetTimezone": "Europe/Paris",
   "dimensionSize": 2000,
   "coreRadius": 350,
+  "resetOffsetRange": 100000,
+  "safariSpawnY": 160,
+  "safariSpawnOffsetY": 3,
+  "spawnStructureId": "safari:safari_spawn_island",
   "allowedBiomes": [
     "minecraft:plains",
     "minecraft:savanna",
@@ -50,27 +56,41 @@ It is generated on first launch.
     "minecraft:forest",
     "minecraft:badlands"
   ],
-  "spawnRateMultiplier": 1.5
+  "spawnRateMultiplier": 1.5,
+  "safariMinLevel": 5,
+  "safariMaxLevel": 30
 }
 ```
 
+## Portal
+
+1. Build a Nether‑style frame with `safari:safari_portal_frame`.
+2. Light it with flint & steel.
+3. Walk into the portal to start a Safari session.
+
 ## Commands
 
-- `/safari enter`: Pay the fee and enter the Safari.
-- `/safari leave`: Quit early (restores inventory).
-- `/safari info`: Check remaining time.
-- `/safari buy balls 5`: Buy 5 balls for 150$.
-- `/safari buy balls 10`: Buy 10 balls for 250$.
+- `/safari enter`
+- `/safari leave`
+- `/safari info`
+- `/safari buy balls 5`
+- `/safari buy balls 10`
+- `/safari reset` (admin)
+- `/safari reload` (admin)
 
 ## Building
 
-This project uses Gradle.
 ```bash
-./gradlew build
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+export PATH="$JAVA_HOME/bin:$PATH"
+./gradlew clean build
 ```
-The output jar will be in `build/libs/`.
 
-## Developer Notes
+Jar output:
+`build/libs/safari-dimension-0.0.1.jar`
 
-- **Capture Logic:** Uses a Mixin into `PokeBallEntity` to cancel standard battle logic and apply a custom RNG chance.
-- **World Reset:** Does not delete files. It shifts the coordinate center of the Safari dimension by 5000 blocks every day based on the configured Timezone.
+## Notes
+
+- The dimension is wiped on reset (folder deletion) and regenerated using the daily seed.
+- The Safari spawn is always at `(0, 0)` with a floating structure placed at `safariSpawnY`.
+- Players need at least one empty inventory slot to enter (Safari Balls are added).

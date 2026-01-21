@@ -54,14 +54,9 @@ public class SafariWorldState {
     public void resetDailySeed() {
         this.currentDailySeed = new Random().nextLong();
         this.lastResetDate = LocalDate.now(ZoneId.of(com.safari.config.SafariConfig.get().resetTimezone)).toString();
-        this.shiftCenter();
+        this.centerX = 0;
+        this.centerZ = 0;
         save();
-    }
-    
-    public void shiftCenter() {
-        // Move 5000 blocks to "reset" the world
-        this.centerX += 5000;
-        this.centerZ += 5000;
     }
     
     public boolean needsReset() {

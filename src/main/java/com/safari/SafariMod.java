@@ -2,6 +2,10 @@ package com.safari;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +21,10 @@ public class SafariMod implements ModInitializer {
         // 1. Register Config Loader (Load on Server Start)
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             com.safari.config.SafariConfig.load(server.getSavePath(WorldSavePath.ROOT).toFile());
+            com.safari.world.SafariChunkGenerator.setNoiseParamsLookup(
+                    server.getRegistryManager().getOptionalWrapper(RegistryKeys.NOISE_PARAMETERS).orElseThrow()
+            );
+            com.safari.session.SafariSessionManager.setServer(server);
         });
         
         // 2. Init Session Manager
@@ -32,5 +40,8 @@ public class SafariMod implements ModInitializer {
         // 5. Register Blocks & Items
         com.safari.block.SafariBlocks.registerModBlocks();
         com.safari.item.ModItems.registerModItems();
+
+        // 6. Register Chunk Generator Codec
+        Registry.register(Registries.CHUNK_GENERATOR, Identifier.of(MOD_ID, "safari_noise"), com.safari.world.SafariChunkGenerator.CODEC);
     }
 }

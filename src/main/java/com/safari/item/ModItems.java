@@ -23,7 +23,6 @@ public class ModItems {
             .entries((context, entries) -> {
                 entries.add(SAFARI_BALL);
                 entries.add(SafariBlocks.SAFARI_PORTAL_FRAME);
-                entries.add(SafariBlocks.SAFARI_PORTAL);
             })
             .build();
 

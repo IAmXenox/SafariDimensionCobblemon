@@ -14,13 +14,13 @@ public class SafariSession {
     private final float returnPitch;
     private int purchasedBalls = 0;
 
-    public SafariSession(ServerPlayerEntity player, long durationTicks) {
+    public SafariSession(ServerPlayerEntity player, long durationTicks, RegistryKey<World> returnDimension, BlockPos returnPos, float returnYaw, float returnPitch) {
         this.player = player;
         this.ticksRemaining = durationTicks;
-        this.returnDimension = player.getWorld().getRegistryKey();
-        this.returnPos = player.getBlockPos();
-        this.returnYaw = player.getYaw();
-        this.returnPitch = player.getPitch();
+        this.returnDimension = returnDimension;
+        this.returnPos = returnPos;
+        this.returnYaw = returnYaw;
+        this.returnPitch = returnPitch;
     }
 
     public void tick() {

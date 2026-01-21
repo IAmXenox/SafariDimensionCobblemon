@@ -21,6 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SafariSessionManager {
     private static final Map<UUID, SafariSession> activeSessions = new ConcurrentHashMap<>();
+    private static long resetCheckTicks = 0;
+    private static net.minecraft.server.MinecraftServer server;
+
+    public static void setServer(net.minecraft.server.MinecraftServer srv) {
+        server = srv;
+    }
 
     public static void init() {
         ServerTickEvents.END_SERVER_TICK.register(server -> tick());
@@ -40,25 +46,36 @@ public class SafariSessionManager {
              SafariWorldManager.findAndSetSafeSpot(safariWorld);
         }
 
-        // 3. Create Session Object
+        // Ensure spawn structure exists
+        SafariWorldManager.placeSpawnStructure(safariWorld);
+
+        // 3. Require at least one empty slot for safari balls
+        if (player.getInventory().getEmptySlot() == -1) {
+            player.sendMessage(Text.of("§cYou need at least one empty slot for Safari Balls."), false);
+            return;
+        }
+
+        // 4. Create Session Object with safe return position
         long duration = SafariConfig.get().sessionTimeMinutes * 60L * 20L;
-        SafariSession session = new SafariSession(player, duration);
+        BlockPos safeReturnPos = getSafeReturnPos(player);
+        SafariSession session = new SafariSession(
+                player,
+                duration,
+                player.getWorld().getRegistryKey(),
+                safeReturnPos,
+                player.getYaw(),
+                player.getPitch()
+        );
         activeSessions.put(player.getUuid(), session);
 
-        // 4. Save & Clear Inventory
-        SafariInventoryHandler.saveAndClear(player);
-
-        // 5. Give Safari Kit
+        // 5. Give Safari Kit (do not clear inventory)
         SafariInventoryHandler.giveSafariKit(player, SafariConfig.get().initialSafariBalls);
 
         // 6. Teleport to Safari
         int x = SafariWorldState.get().centerX;
         int z = SafariWorldState.get().centerZ;
-        // Find safe Y
-        int y = safariWorld.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
-        if (y < -60) y = 100; // Safety fallback
-
-        player.teleport(safariWorld, x + 0.5, y + 1, z + 0.5, 0, 0);
+        int y = SafariConfig.get().safariSpawnY + SafariConfig.get().safariSpawnOffsetY;
+        player.teleport(safariWorld, x + 0.5, y, z + 0.5, 0, 0);
         
         // 7. Apply Resistance/Safety for 10 seconds (loading protection)
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 200, 255, false, false));
@@ -70,15 +87,7 @@ public class SafariSessionManager {
     public static void endSession(ServerPlayerEntity player) {
         SafariSession session = activeSessions.remove(player.getUuid());
         if (session != null) {
-            // 1. Clear Safari Inventory (balls are lost by default)
-            if (!SafariConfig.get().carryOverSafariBalls) {
-                player.getInventory().clear();
-            }
-
-            // 2. Restore Original Inventory
-            SafariInventoryHandler.restore(player);
-
-            // 3. Teleport Back
+            // 1. Teleport Back (inventory untouched)
             ServerWorld returnWorld = player.getServer().getWorld(session.getReturnDimension());
             if (returnWorld != null) {
                 player.teleport(returnWorld, 
@@ -99,6 +108,13 @@ public class SafariSessionManager {
     }
 
     private static void tick() {
+        resetCheckTicks++;
+        if (resetCheckTicks % (20 * 60) == 0 && server != null) { // check every minute
+            var safariWorld = server.getWorld(com.safari.world.SafariDimension.SAFARI_DIM_KEY);
+            if (safariWorld != null && com.safari.state.SafariWorldState.get().needsReset()) {
+                com.safari.world.SafariWorldManager.performDailyResetWithEvacuation(safariWorld);
+            }
+        }
         activeSessions.values().forEach(session -> {
             session.tick();
             
@@ -126,5 +142,18 @@ public class SafariSessionManager {
     
     public static SafariSession getSession(ServerPlayerEntity player) {
         return activeSessions.get(player.getUuid());
+    }
+
+    private static BlockPos getSafeReturnPos(ServerPlayerEntity player) {
+        BlockPos pos = player.getBlockPos();
+        // If standing in portal block, move one block away from portal
+        if (player.getWorld().getBlockState(pos).isOf(com.safari.block.SafariBlocks.SAFARI_PORTAL)) {
+            var dir = player.getHorizontalFacing().getOpposite();
+            BlockPos candidate = pos.offset(dir);
+            if (player.getWorld().getBlockState(candidate).isAir()) {
+                return candidate;
+            }
+        }
+        return pos;
     }
 }

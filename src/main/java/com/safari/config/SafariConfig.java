@@ -30,9 +30,9 @@ public class SafariConfig {
     public int maxBallsPurchasable = 20;
     
     // Capture Rates
-    public double commonCatchRate = 0.22;
-    public double uncommonCatchRate = 0.15;
-    public double rareCatchRate = 0.08;
+    public double commonCatchRate = 0.45;
+    public double uncommonCatchRate = 0.18;
+    public double rareCatchRate = 0.1;
     
     // Timezone
     public String resetTimezone = "Europe/Paris";
@@ -40,11 +40,17 @@ public class SafariConfig {
     // Dimension
     public int dimensionSize = 2000;
     public int coreRadius = 350; 
+    public int resetOffsetRange = 100000;
+    public int safariSpawnY = 160;
+    public int safariSpawnOffsetY = 3;
+    public String spawnStructureId = "safari:safari_spawn_island";
     public List<String> allowedBiomes = Arrays.asList(
             "minecraft:plains", "minecraft:savanna", "minecraft:jungle", 
             "minecraft:swamp", "minecraft:forest", "minecraft:badlands"
     );
     public double spawnRateMultiplier = 1.5;
+    public int safariMinLevel = 5;
+    public int safariMaxLevel = 30;
 
     public static SafariConfig get() {
         if (INSTANCE == null) {

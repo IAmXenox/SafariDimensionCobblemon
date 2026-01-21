@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "safari:block/safari_portal" }
+    "axis=x": { "model": "safari:block/safari_portal_ns" },
+    "axis=z": { "model": "safari:block/safari_portal_ew" }
   }
 }

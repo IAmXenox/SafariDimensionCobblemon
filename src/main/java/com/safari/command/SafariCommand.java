@@ -55,8 +55,8 @@ public class SafariCommand {
             player.sendMessage(Text.of("§cThe Safari Zone is resetting! You have been evacuated."), false);
         }
         
-        SafariWorldManager.performDailyReset(world);
-        ctx.getSource().sendMessage(Text.of("§6Safari Dimension reset! Players evacuated, biome searched and center moved."));
+        SafariWorldManager.performDailyResetWithEvacuation(world);
+        ctx.getSource().sendMessage(Text.of("§6Safari Dimension reset! Players evacuated and world regenerated."));
         return 1;
     }
 

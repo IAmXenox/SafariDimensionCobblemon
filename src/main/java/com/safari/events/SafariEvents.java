@@ -16,22 +16,40 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.item.Items;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.util.math.Direction;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import net.minecraft.block.NetherPortalBlock;
 
 public class SafariEvents {
 
     public static void init() {
         // 1. Block Vanilla Spawns (Only Cobblemon allowed in Safari Dimension)
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            if (world.getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) {
-                if (entity.isPlayer()) return;
-                
-                Identifier id = Registries.ENTITY_TYPE.getId(entity.getType());
-                if (id.getNamespace().equals("cobblemon")) return;
-                
-                // Block other living entities
-                if (entity instanceof net.minecraft.entity.LivingEntity) {
-                    entity.discard();
-                }
+            if (!world.getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) return;
+            if (entity.isPlayer()) return;
+
+            // Defer all entity modifications to avoid ConcurrentModificationException
+            if (world.getServer() != null) {
+                world.getServer().execute(() -> {
+                    Identifier id = Registries.ENTITY_TYPE.getId(entity.getType());
+                    if (id.getNamespace().equals("cobblemon")) {
+                        if (entity instanceof PokemonEntity pokemonEntity) {
+                            if (!pokemonEntity.getCommandTags().contains("safari_level_set")) {
+                                int min = Math.max(1, SafariConfig.get().safariMinLevel);
+                                int max = Math.max(min, SafariConfig.get().safariMaxLevel);
+                                int level = min + world.random.nextInt(max - min + 1);
+                                pokemonEntity.getPokemon().setLevel(level);
+                                pokemonEntity.addCommandTag("safari_level_set");
+                            }
+                        }
+                        return;
+                    }
+
+                    if (entity instanceof net.minecraft.entity.LivingEntity) {
+                        entity.discard();
+                    }
+                });
             }
         });
 
@@ -56,10 +74,12 @@ public class SafariEvents {
                     && player.getStackInHand(hand).isOf(Items.FLINT_AND_STEEL)
                     && world.getBlockState(pos).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) {
 
-                BlockPos target = pos.offset(hitResult.getSide());
-                if (world.getBlockState(target).isAir()) {
-                    world.setBlockState(target, SafariBlocks.SAFARI_PORTAL.getDefaultState());
-                    player.getStackInHand(hand).damage(1, player, p -> p.sendToolBreakStatus(hand));
+                if (tryLightPortal(world, pos)) {
+                    player.getStackInHand(hand).damage(
+                            1,
+                            player,
+                            hand == net.minecraft.util.Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND
+                    );
                     return ActionResult.SUCCESS;
                 }
             }
@@ -96,5 +116,94 @@ public class SafariEvents {
             return serverPlayer.getWorld().getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY);
         }
         return false;
+    }
+
+    private static boolean tryLightPortal(net.minecraft.world.World world, BlockPos clicked) {
+        return tryLightPortalAxis(world, clicked, Direction.Axis.X) || tryLightPortalAxis(world, clicked, Direction.Axis.Z);
+    }
+
+    private static boolean tryLightPortalAxis(net.minecraft.world.World world, BlockPos clicked, Direction.Axis axis) {
+        BlockPos origin = findFrameOrigin(world, clicked, axis);
+        if (origin == null) return false;
+
+        int width = measureFrameWidth(world, origin, axis);
+        int height = measureFrameHeight(world, origin, axis);
+
+        if (width < 4 || height < 5 || width > 23 || height > 23) return false; // Nether-like limits
+
+        if (!isValidFrame(world, origin, axis, width, height)) return false;
+
+        fillPortalInterior(world, origin, axis, width, height);
+        return true;
+    }
+
+    private static BlockPos findFrameOrigin(net.minecraft.world.World world, BlockPos start, Direction.Axis axis) {
+        if (!world.getBlockState(start).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) return null;
+
+        BlockPos pos = start;
+        int bottomY = world.getBottomY();
+
+        // Move down to the bottom of the frame
+        while (pos.getY() > bottomY && world.getBlockState(pos.down()).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) {
+            pos = pos.down();
+        }
+
+        // Move to the left edge of the frame
+        Direction negative = axis == Direction.Axis.X ? Direction.WEST : Direction.NORTH;
+        while (world.getBlockState(pos.offset(negative)).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) {
+            pos = pos.offset(negative);
+        }
+
+        return pos;
+    }
+
+    private static int measureFrameWidth(net.minecraft.world.World world, BlockPos origin, Direction.Axis axis) {
+        Direction positive = axis == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
+        int width = 0;
+        BlockPos pos = origin;
+        while (width <= 23 && world.getBlockState(pos).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) {
+            width++;
+            pos = pos.offset(positive);
+        }
+        return width;
+    }
+
+    private static int measureFrameHeight(net.minecraft.world.World world, BlockPos origin, Direction.Axis axis) {
+        int height = 0;
+        BlockPos pos = origin;
+        while (height <= 23 && world.getBlockState(pos).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) {
+            height++;
+            pos = pos.up();
+        }
+        return height;
+    }
+
+    private static boolean isValidFrame(net.minecraft.world.World world, BlockPos origin, Direction.Axis axis, int width, int height) {
+        for (int w = 0; w < width; w++) {
+            for (int h = 0; h < height; h++) {
+                boolean isEdge = w == 0 || w == width - 1 || h == 0 || h == height - 1;
+                BlockPos check = axis == Direction.Axis.X
+                        ? origin.add(w, h, 0)
+                        : origin.add(0, h, w);
+
+                if (isEdge) {
+                    if (!world.getBlockState(check).isOf(SafariBlocks.SAFARI_PORTAL_FRAME)) return false;
+                } else {
+                    if (!world.getBlockState(check).isAir()) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static void fillPortalInterior(net.minecraft.world.World world, BlockPos origin, Direction.Axis axis, int width, int height) {
+        for (int w = 1; w < width - 1; w++) {
+            for (int h = 1; h < height - 1; h++) {
+                BlockPos place = axis == Direction.Axis.X
+                        ? origin.add(w, h, 0)
+                        : origin.add(0, h, w);
+                world.setBlockState(place, SafariBlocks.SAFARI_PORTAL.getDefaultState().with(NetherPortalBlock.AXIS, axis));
+            }
+        }
     }
 }

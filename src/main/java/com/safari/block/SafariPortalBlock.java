@@ -2,14 +2,14 @@ package com.safari.block;
 
 import com.safari.session.SafariSessionManager;
 import com.safari.world.SafariDimension;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SafariPortalBlock extends Block {
+public class SafariPortalBlock extends NetherPortalBlock {
     public SafariPortalBlock(Settings settings) {
         super(settings);
     }

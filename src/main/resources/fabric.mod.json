@@ -5,11 +5,10 @@
   "name": "Safari Dimension",
   "description": "A daily resetting Safari dimension for Cobblemon.",
   "authors": [
-    "Opencode"
+    "Ryvexam"
   ],
   "contact": {
-    "homepage": "https://example.com/",
-    "sources": "https://github.com/example/safari"
+    "homepage": "https://ryvexam.fr"
   },
   "license": "MIT",
   "icon": "assets/safari/icon.png",
