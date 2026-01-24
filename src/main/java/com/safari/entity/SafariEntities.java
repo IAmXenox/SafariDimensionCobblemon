@@ -25,6 +25,10 @@ public final class SafariEntities {
     private SafariEntities() {
     }
 
+    public static void register() {
+        // Ensures static initialization runs.
+    }
+
     public static void registerAttributes() {
         DefaultAttributeContainer attributes = SafariNpcEntity.createAttributes();
         FabricDefaultAttributeRegistry.register(SAFARI_NPC, attributes);

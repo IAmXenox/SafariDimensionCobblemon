@@ -12,6 +12,7 @@
 - Added Safari biome + custom Cobblemon spawn pools.
 - Added session resume on reconnect and safari NPC auto-spawn at (0,0)+10.
 - Tickets now have a 1s use cooldown and entry warning title.
+- Safari Ball catch rate now uses spawn rarity buckets.
 
 ## 0.0.1
 

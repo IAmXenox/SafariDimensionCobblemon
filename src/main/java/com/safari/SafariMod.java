@@ -43,6 +43,7 @@ public class SafariMod implements ModInitializer {
         com.safari.item.ModItems.registerModItems();
 
         // 5b. Register Entities
+        com.safari.entity.SafariEntities.register();
         com.safari.entity.SafariEntities.registerAttributes();
 
         // 6. Register Chunk Generator Codec

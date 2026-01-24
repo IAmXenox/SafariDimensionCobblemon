@@ -4,6 +4,7 @@ import com.safari.block.SafariBlocks;
 import com.safari.config.SafariConfig;
 import com.safari.session.SafariSessionManager;
 import com.safari.world.SafariDimension;
+import com.safari.item.ModItems;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -91,6 +92,10 @@ public class SafariEvents {
             // Block placing in safari
             if (isInSafari(player)) {
                 if (!player.isCreative()) {
+                    var stack = player.getStackInHand(hand);
+                    if (stack != null && !stack.isEmpty() && stack.isOf(ModItems.SAFARI_NPC_SPAWN_EGG)) {
+                        return ActionResult.PASS;
+                    }
                     return ActionResult.FAIL;
                 }
             }

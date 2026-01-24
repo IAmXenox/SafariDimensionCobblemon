@@ -13,6 +13,7 @@ Dedicated Safari dimension for Cobblemon 1.7.1 (MC 1.21.1).
 - Safari Guide NPC with shop for balls and time tickets, auto-spawns near (0,0).
 - Session resumes on reconnect with remaining time.
 - Entry warning title reminds you time is lost on exit.
+- Safari Ball catch rate follows spawn rarity buckets.
 - Shop UI shows your Pokédollar balance and 16/32/64 ball bundles.
 - World border 2000x2000 centered at (0,0).
 
@@ -35,6 +36,7 @@ World‑specific config:
 
 Key fields:
 - `commonCatchRate`, `uncommonCatchRate`, `rareCatchRate`
+- `ultraRareCatchRate`
 - `safariSpawnY`, `safariSpawnOffsetY`
 - `safariMinLevel`, `safariMaxLevel`
 - `pack16BallsPrice`, `pack32BallsPrice`, `pack64BallsPrice`

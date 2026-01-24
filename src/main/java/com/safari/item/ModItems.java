@@ -22,7 +22,7 @@ public class ModItems {
     public static final Item SAFARI_TICKET_30 = register("ticket_30", new SafariTimeTicketItem(30, new Item.Settings().maxCount(16)));
     public static final Item SAFARI_NPC_SPAWN_EGG = register(
             "safari_npc_spawn_egg",
-            new SpawnEggItem(SafariEntities.SAFARI_NPC, 0xE5D1B8, 0x4B7A3C, new Item.Settings())
+            new SpawnEggItem(SafariEntities.SAFARI_NPC, 0x111111, 0x2E8B57, new Item.Settings())
     );
 
     public static final RegistryKey<ItemGroup> SAFARI_ITEM_GROUP_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(SafariMod.MOD_ID, "item_group"));

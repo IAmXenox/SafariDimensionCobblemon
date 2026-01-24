@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.pokeball.catching.CaptureContext;
 import com.cobblemon.mod.common.entity.pokeball.EmptyPokeBallEntity;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.safari.config.SafariConfig;
+import com.safari.logic.SafariSpawnRarity;
 import com.safari.world.SafariDimension;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,15 +28,7 @@ public abstract class MixinPokeBallCaptureCalculatedEvent {
         CallbackInfo ci
     ) {
         if (thrower.getWorld().getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) {
-            double rate = SafariConfig.get().commonCatchRate;
-
-            try {
-                int catchRate = pokemonEntity.getPokemon().getSpecies().getCatchRate();
-                if (catchRate < 50) rate = SafariConfig.get().rareCatchRate;
-                else if (catchRate < 100) rate = SafariConfig.get().uncommonCatchRate;
-                else rate = SafariConfig.get().commonCatchRate;
-            } catch (Exception ignored) {
-            }
+            double rate = getCatchRate(pokemonEntity);
 
             boolean success = RANDOM.nextDouble() < rate;
             
@@ -46,5 +39,18 @@ public abstract class MixinPokeBallCaptureCalculatedEvent {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    private double getCatchRate(PokemonEntity pokemonEntity) {
+        String bucket = SafariSpawnRarity.getBucket(pokemonEntity);
+        if (bucket == null) {
+            return SafariConfig.get().commonCatchRate;
+        }
+        return switch (bucket) {
+            case "uncommon" -> SafariConfig.get().uncommonCatchRate;
+            case "rare" -> SafariConfig.get().rareCatchRate;
+            case "ultra-rare" -> SafariConfig.get().ultraRareCatchRate;
+            default -> SafariConfig.get().commonCatchRate;
+        };
     }
 }

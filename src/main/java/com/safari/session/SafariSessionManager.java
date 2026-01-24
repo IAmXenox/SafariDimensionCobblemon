@@ -89,6 +89,7 @@ public class SafariSessionManager {
             y = SafariConfig.get().safariSpawnY + SafariConfig.get().safariSpawnOffsetY;
         }
         player.teleport(safariWorld, x + 0.5, y, z + 0.5, 0, 0);
+        SafariWorldManager.ensureSafariNpcNear(safariWorld, new BlockPos(x, y, z));
 
         player.networkHandler.sendPacket(new TitleFadeS2CPacket(10, 60, 10));
         player.networkHandler.sendPacket(new TitleS2CPacket(Text.of("§cSafari Warning")));

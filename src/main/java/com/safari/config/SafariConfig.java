@@ -36,6 +36,7 @@ public class SafariConfig {
     public double commonCatchRate = 0.45;
     public double uncommonCatchRate = 0.18;
     public double rareCatchRate = 0.1;
+    public double ultraRareCatchRate = 0.05;
     
     // Dimension
     public int dimensionSize = 2000;
@@ -133,6 +134,10 @@ public class SafariConfig {
         }
         if (INSTANCE.allowedBiomes == null || INSTANCE.allowedBiomes.isEmpty()) {
             INSTANCE.allowedBiomes = Arrays.asList("safari:safari_biome");
+            updated = true;
+        }
+        if (INSTANCE.ultraRareCatchRate <= 0) {
+            INSTANCE.ultraRareCatchRate = 0.05;
             updated = true;
         }
         if (INSTANCE.maxBallsPurchasable < 0) {

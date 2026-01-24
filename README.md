@@ -12,6 +12,7 @@ Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a dedicated Safari di
 - **Only Safari Balls** can be used in Safari.
 - **Safari Guide NPC** with a shop for balls and time tickets, auto‑spawns near `(0,0)`.
 - **Custom Safari spawn pools** (common/uncommon/rare/ultra‑rare + special pools).
+- **Safari Ball catch rate** follows spawn rarity (common→ultra‑rare).
 - **Session resume** on reconnect with remaining time.
 - **Entry warning** title that leaving ends the session.
 - **Shop UI** shows your Pokédollar balance and offers 16/32/64 ball bundles.
@@ -47,6 +48,7 @@ Default values:
   "commonCatchRate": 0.45,
   "uncommonCatchRate": 0.18,
   "rareCatchRate": 0.1,
+  "ultraRareCatchRate": 0.05,
   "dimensionSize": 2000,
   "coreRadius": 350,
   "resetOffsetRange": 100000,
