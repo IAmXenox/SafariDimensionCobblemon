@@ -31,8 +31,8 @@ Dedicated Safari dimension for Cobblemon 1.7.1 (MC 1.21.1).
 
 ## Config
 
-World‑specific config:
-`world/<your-world>/safari-config.json`
+Config file:
+`config/safari-config.json`
 
 Key fields:
 - `commonCatchRate`, `uncommonCatchRate`, `rareCatchRate`

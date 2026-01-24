@@ -18,10 +18,7 @@ public class SafariConfig {
     // Session
     public int sessionTimeMinutes = 30;
     public int initialSafariBalls = 25;
-    public String safariBallItem = "safari:safari_ball";
     public boolean carryOverSafariBalls = false;
-    public boolean logoutClearInventory = true;
-    public boolean allowMultiplayerSessions = true;
 
     // Economy
     public int entrancePrice = 2500;
@@ -40,45 +37,11 @@ public class SafariConfig {
     
     // Dimension
     public int dimensionSize = 2000;
-    public int coreRadius = 350; 
-    public int resetOffsetRange = 100000;
     public int safariSpawnY = 160;
     public int safariSpawnOffsetY = 3;
     public List<String> allowedBiomes = Arrays.asList("safari:safari_biome");
-    public double spawnRateMultiplier = 1.5;
     public int safariMinLevel = 5;
     public int safariMaxLevel = 30;
-    public int starterBoostRadius = 120;
-    public double starterCullChance = 0.45;
-    public List<String> starterSpecies = Arrays.asList(
-            "bulbasaur",
-            "charmander",
-            "squirtle",
-            "chikorita",
-            "cyndaquil",
-            "totodile",
-            "treecko",
-            "torchic",
-            "mudkip",
-            "turtwig",
-            "chimchar",
-            "piplup",
-            "snivy",
-            "tepig",
-            "oshawott",
-            "chespin",
-            "fennekin",
-            "froakie",
-            "rowlet",
-            "litten",
-            "popplio",
-            "grookey",
-            "scorbunny",
-            "sobble",
-            "sprigatito",
-            "fuecoco",
-            "quaxly"
-    );
 
     public static SafariConfig get() {
         if (INSTANCE == null) {
@@ -106,7 +69,16 @@ public class SafariConfig {
             JsonObject raw = JsonParser.parseReader(reader).getAsJsonObject();
             boolean shouldRewrite = raw.has("resetTimezone")
                     || raw.has("enableDailyReset")
-                    || raw.has("spawnStructureId");
+                    || raw.has("spawnStructureId")
+                    || raw.has("starterBoostRadius")
+                    || raw.has("starterCullChance")
+                    || raw.has("starterSpecies")
+                    || raw.has("safariBallItem")
+                    || raw.has("logoutClearInventory")
+                    || raw.has("allowMultiplayerSessions")
+                    || raw.has("coreRadius")
+                    || raw.has("resetOffsetRange")
+                    || raw.has("spawnRateMultiplier");
             INSTANCE = gson.fromJson(raw, SafariConfig.class);
             boolean normalized = normalizeDefaults();
             if (shouldRewrite || normalized) {

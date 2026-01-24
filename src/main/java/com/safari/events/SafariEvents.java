@@ -35,6 +35,9 @@ public class SafariEvents {
             if (world.getServer() != null) {
                 world.getServer().execute(() -> {
                     Identifier id = Registries.ENTITY_TYPE.getId(entity.getType());
+                    if ("safari".equals(id.getNamespace()) && "safari_npc".equals(id.getPath())) {
+                        return;
+                    }
                     if (id.getNamespace().equals("cobblemon")) {
                         if (entity instanceof PokemonEntity pokemonEntity) {
                             if (!pokemonEntity.getCommandTags().contains("safari_level_set")) {
@@ -43,9 +46,6 @@ public class SafariEvents {
                                 int level = min + world.random.nextInt(max - min + 1);
                                 pokemonEntity.getPokemon().setLevel(level);
                                 pokemonEntity.addCommandTag("safari_level_set");
-                            }
-                            if (shouldCullForStarterBoost(world, pokemonEntity)) {
-                                entity.discard();
                             }
                         }
                         return;
@@ -143,27 +143,6 @@ public class SafariEvents {
             }
             return ActionResult.PASS;
         });
-    }
-
-    private static boolean shouldCullForStarterBoost(net.minecraft.server.world.ServerWorld world, PokemonEntity pokemonEntity) {
-        int radius = Math.max(0, SafariConfig.get().starterBoostRadius);
-        double chance = SafariConfig.get().starterCullChance;
-        if (radius <= 0 || chance <= 0.0) return false;
-
-        int spawnX = com.safari.state.SafariWorldState.get().spawnX;
-        int spawnZ = com.safari.state.SafariWorldState.get().spawnZ;
-        BlockPos pos = pokemonEntity.getBlockPos();
-        int dx = pos.getX() - spawnX;
-        int dz = pos.getZ() - spawnZ;
-        if ((dx * dx + dz * dz) > radius * radius) return false;
-
-        String species = pokemonEntity.getPokemon().getSpecies().getName().toString().toLowerCase();
-        boolean isStarter = SafariConfig.get().starterSpecies.stream().anyMatch(entry -> {
-            String normalized = entry.toLowerCase();
-            return species.equals(normalized) || species.endsWith(":" + normalized);
-        });
-        if (isStarter) return false;
-        return world.random.nextDouble() < chance;
     }
 
     private static boolean isInSafari(PlayerEntity player) {

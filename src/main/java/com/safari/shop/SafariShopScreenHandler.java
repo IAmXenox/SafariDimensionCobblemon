@@ -109,7 +109,8 @@ public class SafariShopScreenHandler extends ScreenHandler {
         head.set(DataComponentTypes.CUSTOM_NAME, Text.of("§aBalance: §e" + balance + " Pokédollars"));
 
         GameProfile profile = new GameProfile(serverPlayer.getUuid(), serverPlayer.getName().getString());
-        head.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+        ProfileComponent component = new ProfileComponent(profile);
+        head.set(DataComponentTypes.PROFILE, component);
 
         inventory.setStack(4, head);
         sendContentUpdates();

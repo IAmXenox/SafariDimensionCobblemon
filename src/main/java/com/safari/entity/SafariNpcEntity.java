@@ -42,9 +42,6 @@ public class SafariNpcEntity extends PathAwareEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.getWorld().isClient && !this.getWorld().getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) {
-            this.discard();
-        }
     }
 
     @Override

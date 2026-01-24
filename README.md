@@ -17,7 +17,7 @@ Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a dedicated Safari di
 - **Entry warning** title that leaving ends the session.
 - **Shop UI** shows your Pokédollar balance and offers 16/32/64 ball bundles.
 - **World border** 2000x2000 centered on `(0,0)`.
-- **World‑specific config** stored in each world save.
+- **Config file** stored in the main `config` folder.
 
 ## Dependencies
 
@@ -28,18 +28,15 @@ Place these jars in your `mods` folder:
 
 ## Configuration
 
-World‑specific config file:
-`world/<your-world>/safari-config.json`
+Config file:
+`config/safari-config.json`
 
 Default values:
 ```json
 {
   "sessionTimeMinutes": 30,
   "initialSafariBalls": 25,
-  "safariBallItem": "safari:safari_ball",
   "carryOverSafariBalls": false,
-  "logoutClearInventory": true,
-  "allowMultiplayerSessions": true,
   "entrancePrice": 2500,
   "pack16BallsPrice": 400,
   "pack32BallsPrice": 750,
@@ -50,25 +47,16 @@ Default values:
   "rareCatchRate": 0.1,
   "ultraRareCatchRate": 0.05,
   "dimensionSize": 2000,
-  "coreRadius": 350,
-  "resetOffsetRange": 100000,
   "safariSpawnY": 160,
   "safariSpawnOffsetY": 3,
   "allowedBiomes": [
     "safari:safari_biome"
   ],
-  "spawnRateMultiplier": 1.5,
   "safariMinLevel": 5,
   "safariMaxLevel": 30,
   "timePurchaseMinutes": 30,
   "timePurchasePrice": 1000,
-  "starterBoostRadius": 120,
-  "starterCullChance": 0.45,
-  "starterSpecies": [
-    "bulbasaur",
-    "charmander",
-    "squirtle"
-  ]
+  "ultraRareCatchRate": 0.05
 }
 ```
 

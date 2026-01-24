@@ -44,26 +44,32 @@ public class SafariWorldManager {
     }
 
     private static void ensureSafariNpc(ServerWorld world, BlockPos basePos) {
+        if (world.getServer() == null) {
+            return;
+        }
+
         BlockPos target = new BlockPos(basePos.getX() + 10, basePos.getY(), basePos.getZ());
-        world.getChunkManager().getChunk(target.getX() >> 4, target.getZ() >> 4, net.minecraft.world.chunk.ChunkStatus.FULL, true);
+        world.getServer().execute(() -> {
+            world.getChunkManager().getChunk(target.getX() >> 4, target.getZ() >> 4, net.minecraft.world.chunk.ChunkStatus.FULL, true);
 
-        Box search = new Box(target).expand(8.0);
-        boolean exists = !world.getEntitiesByClass(SafariNpcEntity.class, search, entity -> true).isEmpty();
-        if (exists) {
-            return;
-        }
+            Box search = new Box(target).expand(8.0);
+            boolean exists = !world.getEntitiesByClass(SafariNpcEntity.class, search, entity -> true).isEmpty();
+            if (exists) {
+                return;
+            }
 
-        SafariNpcEntity npc = SafariEntities.SAFARI_NPC.create(world);
-        if (npc == null) {
-            com.safari.SafariMod.LOGGER.warn("Safari NPC spawn failed: entity type not created.");
-            return;
-        }
+            SafariNpcEntity npc = SafariEntities.SAFARI_NPC.create(world);
+            if (npc == null) {
+                com.safari.SafariMod.LOGGER.warn("Safari NPC spawn failed: entity type not created.");
+                return;
+            }
 
-        npc.refreshPositionAndAngles(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.0f, 0.0f);
-        boolean spawned = world.spawnEntity(npc);
-        if (!spawned) {
-            com.safari.SafariMod.LOGGER.warn("Safari NPC spawn failed at {},{},{}", target.getX(), target.getY(), target.getZ());
-        }
+            npc.refreshPositionAndAngles(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.0f, 0.0f);
+            boolean spawned = world.spawnEntity(npc);
+            if (!spawned) {
+                com.safari.SafariMod.LOGGER.warn("Safari NPC spawn failed at {},{},{}", target.getX(), target.getY(), target.getZ());
+            }
+        });
     }
 
     private static void updateBorder(ServerWorld world, int x, int z) {

@@ -3,6 +3,7 @@ package com.safari.mixin;
 import com.safari.world.SafariDimension;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinLivingEntityDamage {
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     private void safari$blockDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (source.isOf(DamageTypes.GENERIC_KILL)
+                || source.isOf(DamageTypes.OUT_OF_WORLD)) {
+            return;
+        }
         LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof ServerPlayerEntity player
                 && player.getWorld().getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) {

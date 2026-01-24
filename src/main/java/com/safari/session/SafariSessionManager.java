@@ -185,6 +185,11 @@ public class SafariSessionManager {
     private static void tick() {
         activeSessions.values().forEach(session -> {
             session.tick();
+
+            if (!session.getPlayer().getWorld().getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) {
+                endSession(session.getPlayer());
+                return;
+            }
             
             // Action Bar Timer (Every second)
             if (session.getTicksRemaining() % 20 == 0) {
