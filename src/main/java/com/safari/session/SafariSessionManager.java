@@ -118,6 +118,7 @@ public class SafariSessionManager {
                     session.getReturnYaw(), 
                     session.getReturnPitch()
                 );
+                player.setPortalCooldown(80);
             } else {
                 // Fallback to Overworld Spawn if original world is invalid
                 ServerWorld overworld = player.getServer().getWorld(World.OVERWORLD);
@@ -247,15 +248,18 @@ public class SafariSessionManager {
     }
 
     private static BlockPos findSafeExitPos(ServerWorld world, BlockPos pos) {
-        if (!isPortalBlock(world, pos)) {
+        if (!isPortalBlock(world, pos) && !isPortalNearby(world, pos)) {
             return pos;
         }
 
         for (int dy = 0; dy <= 1; dy++) {
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dz = -1; dz <= 1; dz++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
                     BlockPos candidate = pos.add(dx, dy, dz);
-                    if (!isPortalBlock(world, candidate) && world.getBlockState(candidate).isAir()) {
+                    if (!isPortalBlock(world, candidate)
+                            && !isPortalNearby(world, candidate)
+                            && world.getBlockState(candidate).isAir()
+                            && world.getBlockState(candidate.up()).isAir()) {
                         return candidate;
                     }
                 }
@@ -263,6 +267,19 @@ public class SafariSessionManager {
         }
 
         return pos;
+    }
+
+    private static boolean isPortalNearby(ServerWorld world, BlockPos pos) {
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (isPortalBlock(world, pos.add(dx, dy, dz))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isPortalBlock(net.minecraft.world.World world, BlockPos pos) {

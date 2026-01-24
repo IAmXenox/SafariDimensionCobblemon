@@ -7,6 +7,7 @@ import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class SafariPortalBlock extends NetherPortalBlock {
@@ -26,5 +27,10 @@ public class SafariPortalBlock extends NetherPortalBlock {
             SafariSessionManager.startSession(player);
             player.setPortalCooldown(60);
         }
+    }
+
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        // Silence portal ambient sounds/particles.
     }
 }

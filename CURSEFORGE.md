@@ -1,7 +1,7 @@
 # Safari Dimension (Cobblemon)
 
 Dedicated Safari dimension for Cobblemon 1.7.1 (MC 1.21.1).
-
+any bugs report on :  https://discord.gg/zxZXcaTHwe
 ## Features
 
 - Custom Safari biome (sparse jungle style).
@@ -11,6 +11,7 @@ Dedicated Safari dimension for Cobblemon 1.7.1 (MC 1.21.1).
 - No damage + no block breaking/placing inside Safari (creative only for building).
 - Only Safari Balls can be used in Safari.
 - Safari Guide NPC with shop for balls and time tickets, auto-spawns near (0,0).
+- Thanks Aerendil for the Safari Portal NPC.
 - Session resumes on reconnect with remaining time.
 - Entry warning title reminds you time is lost on exit.
 - Safari Ball catch rate follows spawn rarity buckets.

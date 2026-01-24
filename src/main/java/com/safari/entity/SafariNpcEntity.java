@@ -1,6 +1,7 @@
 package com.safari.entity;
 
 import com.safari.world.SafariDimension;
+import com.safari.item.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import com.safari.shop.SafariShopScreenHandler;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.item.ItemStack;
 
 import java.util.EnumSet;
 
@@ -24,6 +26,9 @@ public class SafariNpcEntity extends PathAwareEntity {
         super(entityType, world);
         this.setPersistent();
         this.setInvulnerable(true);
+        this.setStackInHand(Hand.MAIN_HAND, new ItemStack(ModItems.SAFARI_BALL));
+        this.setStackInHand(Hand.OFF_HAND, new ItemStack(ModItems.SAFARI_TICKET_5));
+        this.setCanPickUpLoot(false);
     }
 
     public static DefaultAttributeContainer createAttributes() {

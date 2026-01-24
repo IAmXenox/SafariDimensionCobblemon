@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/nether_portal",
+  "textures": {
+    "portal": "safari:block/safari_portal"
+  }
+}

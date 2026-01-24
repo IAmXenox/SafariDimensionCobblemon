@@ -63,6 +63,12 @@ public class SafariShopScreenHandler extends ScreenHandler {
     private void addShopItem(ShopInventory inventory, int slot, Item item, int count) {
         ItemStack stack = new ItemStack(item);
         stack.setCount(count);
+        int price = getPrice(new ShopItem(item, count));
+        if (price > 0) {
+            java.util.List<Text> lore = new java.util.ArrayList<>();
+            lore.add(Text.of("§7Price: §e" + price + " Pokédollars"));
+            stack.set(DataComponentTypes.LORE, new net.minecraft.component.type.LoreComponent(lore));
+        }
         inventory.setStack(slot, stack);
         shopItems.put(slot, new ShopItem(item, count));
     }
@@ -96,7 +102,22 @@ public class SafariShopScreenHandler extends ScreenHandler {
         if (!player.getInventory().insertStack(stack)) {
             player.dropItem(stack, false);
         }
+        updateShopPrices();
         updateBalanceDisplay();
+    }
+
+    private void updateShopPrices() {
+        for (Map.Entry<Integer, ShopItem> entry : shopItems.entrySet()) {
+            ItemStack stack = inventory.getStack(entry.getKey()).copy();
+            int price = getPrice(entry.getValue());
+            if (price > 0) {
+                java.util.List<Text> lore = new java.util.ArrayList<>();
+                lore.add(Text.of("§7Price: §e" + price + " Pokédollars"));
+                stack.set(DataComponentTypes.LORE, new net.minecraft.component.type.LoreComponent(lore));
+            }
+            inventory.setStack(entry.getKey(), stack);
+        }
+        sendContentUpdates();
     }
 
     private void updateBalanceDisplay() {

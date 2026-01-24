@@ -24,6 +24,10 @@ public class ModItems {
             "safari_npc_spawn_egg",
             new SpawnEggItem(SafariEntities.SAFARI_NPC, 0x111111, 0x2E8B57, new Item.Settings())
     );
+    public static final Item SAFARI_PORTAL_NPC_SPAWN_EGG = register(
+            "safari_portal_npc_spawn_egg",
+            new SpawnEggItem(SafariEntities.SAFARI_PORTAL_NPC, 0x2E8B57, 0x111111, new Item.Settings())
+    );
 
     public static final RegistryKey<ItemGroup> SAFARI_ITEM_GROUP_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(SafariMod.MOD_ID, "item_group"));
     public static final ItemGroup SAFARI_ITEM_GROUP = FabricItemGroup.builder()
@@ -35,6 +39,7 @@ public class ModItems {
                 entries.add(SAFARI_TICKET_15);
                 entries.add(SAFARI_TICKET_30);
                 entries.add(SAFARI_NPC_SPAWN_EGG);
+                entries.add(SAFARI_PORTAL_NPC_SPAWN_EGG);
                 entries.add(SafariBlocks.SAFARI_PORTAL_FRAME);
             })
             .build();

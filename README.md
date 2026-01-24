@@ -11,6 +11,7 @@ Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a dedicated Safari di
 - **No damage** inside Safari; block breaking/placing is **creative‑only**.
 - **Only Safari Balls** can be used in Safari.
 - **Safari Guide NPC** with a shop for balls and time tickets, auto‑spawns near `(0,0)`.
+- **Safari Portal NPC** (thanks Aerendil).
 - **Custom Safari spawn pools** (common/uncommon/rare/ultra‑rare + special pools).
 - **Safari Ball catch rate** follows spawn rarity (common→ultra‑rare).
 - **Session resume** on reconnect with remaining time.
@@ -87,7 +88,7 @@ export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
 Jar output:
-`build/libs/safari-dimension-0.0.2.jar`
+`build/libs/safari-dimension-0.0.3.jar`
 
 ## Notes
 

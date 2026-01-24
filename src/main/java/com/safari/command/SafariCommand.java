@@ -66,7 +66,14 @@ public class SafariCommand {
             }
 
             int price = SafariConfig.get().entrancePrice;
-            if (!SafariEconomy.deduct(player, price)) {
+            boolean paid = SafariEconomy.deduct(player, price);
+            com.safari.SafariMod.LOGGER.info(
+                    "Safari entry payment: player={}, price={}, success={}",
+                    player.getName().getString(),
+                    price,
+                    paid
+            );
+            if (!paid) {
                 ctx.getSource().sendMessage(Text.of("§cYou need " + price + " Pokédollars to enter!"));
                 return 0;
             }

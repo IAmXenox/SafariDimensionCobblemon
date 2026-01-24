@@ -13,6 +13,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraft.item.ItemStack;
+import com.safari.block.SafariBlocks;
 
 public class SafariPortalNpcEntity extends PathAwareEntity {
 
@@ -22,6 +24,8 @@ public class SafariPortalNpcEntity extends PathAwareEntity {
         super(entityType, world);
         this.setCustomName(Text.literal(npcName));
         this.setCustomNameVisible(true);
+        this.setStackInHand(Hand.MAIN_HAND, new ItemStack(SafariBlocks.SAFARI_PORTAL_FRAME));
+        this.setCanPickUpLoot(false);
     }
 
     @Override
