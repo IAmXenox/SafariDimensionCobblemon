@@ -130,8 +130,7 @@ public class SafariShopScreenHandler extends ScreenHandler {
         ItemStack head = new ItemStack(Items.PLAYER_HEAD);
         head.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("message.safari.balance", balance).formatted(Formatting.GREEN));
 
-        GameProfile profile = new GameProfile(serverPlayer.getUuid(), serverPlayer.getName().getString());
-        ProfileComponent component = new ProfileComponent(profile);
+        ProfileComponent component = new ProfileComponent(serverPlayer.getGameProfile());
         head.set(DataComponentTypes.PROFILE, component);
 
         inventory.setStack(4, head);
