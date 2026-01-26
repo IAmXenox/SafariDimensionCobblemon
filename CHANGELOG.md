@@ -1,16 +1,10 @@
 # Changelog
 
-## 0.0.10
-- Implemented 2D hotbar icon and 3D held model for Safari Ball using model predicates.
-- Extracted and bundled Safari Ball textures to ensure perfect rendering.
-- Reverted SafariBallItem to reflection-based logic for compatibility.
-
 ## 0.0.9
-- Updated Safari Ball 3D model to use `cobblemon:item/poke_ball_model` as parent and correct texture path.
-- Removed logic that gives free Safari Balls on entry.
-- Removed logic that clears Safari Balls on session end.
+- Implemented Hybrid 2D/3D Safari Ball rendering (2D icon in GUI/hotbar, 3D model in hand).
+- Fixed Safari Ball 3D model texture using `cobblemon:item/poke_ball_model` parent and official textures.
+- Inventory logic update: no free balls on entry, no clearing balls on exit (players must buy balls in shop).
 - Updated dependency to Cobblemon Economy 0.0.11.
-- Fixed Safari Ball 3D model texture reference.
 - Removed experimental world border isolation logic to prevent startup crashes with other mods.
 
 ## 0.0.8
