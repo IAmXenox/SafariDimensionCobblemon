@@ -1,17 +1,15 @@
 # Changelog
 
-## 0.0.10
-- Updated Safari Ball 3D model to use `cobblemon:item/poke_ball_model` as parent.
+## 0.0.9
+- Updated Safari Ball 3D model to use `cobblemon:item/poke_ball_model` as parent and correct texture path.
 - Removed logic that gives free Safari Balls on entry.
 - Removed logic that clears Safari Balls on session end.
-
-## 0.0.9
-- Fixed Safari Ball 3D model texture reference using correct Cobblemon path.
-
-## 0.0.8
 - Updated dependency to Cobblemon Economy 0.0.11.
 - Fixed Safari Ball 3D model texture reference.
 - Removed experimental world border isolation logic to prevent startup crashes with other mods.
+
+## 0.0.8
+- (Consolidated into 0.0.9)
 
 ## 0.0.7
 - Synchronize Safari dimension time with the Overworld time.
