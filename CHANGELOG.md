@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.10
+- Implemented 2D hotbar icon and 3D held model for Safari Ball using model predicates.
+- Extracted and bundled Safari Ball textures to ensure perfect rendering.
+- Reverted SafariBallItem to reflection-based logic for compatibility.
+
 ## 0.0.9
 - Updated Safari Ball 3D model to use `cobblemon:item/poke_ball_model` as parent and correct texture path.
 - Removed logic that gives free Safari Balls on entry.

@@ -1,6 +1,12 @@
 {
-  "parent": "cobblemon:item/poke_ball_model",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "cobblemon:item/poke_balls/models/safari_ball"
-  }
+    "layer0": "safari:item/safari_ball"
+  },
+  "overrides": [
+    {
+      "predicate": { "safari:hand": 1.0 },
+      "model": "safari:item/safari_ball_3d"
+    }
+  ]
 }
