@@ -162,6 +162,13 @@ public class SafariPortalNpcEntity extends PathAwareEntity {
         if (source.isOf(DamageTypes.GENERIC_KILL) || source.isOf(DamageTypes.OUT_OF_WORLD)) {
             return super.damage(source, amount);
         }
+        
+        // Check YAWP flag
+        Boolean allowed = com.safari.compat.CompatHandler.checkYawp(this, source.getAttacker());
+        if (allowed != null && allowed) {
+             return super.damage(source, amount);
+        }
+        
         return false;
     }
 

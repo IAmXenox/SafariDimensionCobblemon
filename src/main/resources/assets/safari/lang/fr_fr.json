@@ -9,6 +9,7 @@
   "block.safari.safari_portal_frame": "Cadre du portail Safari",
   "block.safari.safari_portal": "Portail Safari",
   "message.safari.no_send_out": "Impossible d'envoyer un Pokemon dans la Zone Safari.",
+  "message.safari.no_battling": "Les combats sont desactivés dans la Zone Safari.",
   "message.safari.dimension_not_loaded": "Erreur: Dimension Safari non chargee. Contactez un admin.",
   "message.safari.finding_safe_spot": "Recherche d'un point d'arrivee sur... veuillez patienter.",
   "message.safari.need_empty_slot": "Il faut au moins un slot vide pour les Safari Balls.",

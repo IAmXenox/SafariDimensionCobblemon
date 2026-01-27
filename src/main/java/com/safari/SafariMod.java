@@ -18,6 +18,9 @@ public class SafariMod implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Safari Dimension Mod...");
         
+        // 0. Init Compat (YAWP, etc.)
+        com.safari.compat.CompatHandler.init();
+        
         // 1. Register Config Loader (Load on Server Start)
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             com.safari.config.SafariConfig.load(server.getSavePath(WorldSavePath.ROOT).toFile());

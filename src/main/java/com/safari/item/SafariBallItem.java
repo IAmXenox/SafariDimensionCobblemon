@@ -77,6 +77,11 @@ public class SafariBallItem extends Item {
                         float power = (float) getThrowPower.invoke(safariBallObj);
 
                         proj.setVelocity(user, pitch - overhandFactor, yaw, 0.0F, power, 1.0F);
+
+                        if (proj instanceof net.minecraft.entity.projectile.thrown.ThrownItemEntity thrownProj) {
+                            thrownProj.setItem(new ItemStack(ModItems.SAFARI_BALL));
+                        }
+
                         world.spawnEntity(proj);
                     }
                 } else {

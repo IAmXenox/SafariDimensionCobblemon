@@ -28,6 +28,7 @@ dependencies {
     // Note: In a dev environment, "modImplementation files()" often works best
     modImplementation files("libs/Abes-Hutts-Cobblemon-1.21.1-1.7.1-1.0.1.jar")
     modImplementation files("libs/cobblemon-economy-0.0.11.jar")
+    modImplementation files("libs/yawp-1.21.1-fabric-0.6.3-beta1.jar")
 }
 
 processResources {
