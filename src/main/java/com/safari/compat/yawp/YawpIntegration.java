@@ -21,8 +21,9 @@ public class YawpIntegration {
     public static void register() {
         // Registering a flag named "melee-npc-safari" under the "yawp" namespace
         FlagMetaInfo meta = new FlagMetaInfo(Set.of(), FlagFrequency.NORMAL);
-        FlagRegister.registerFlag("yawp", FLAG_ID, meta);
-        SAFARI_FLAG = FlagRegister.getFlag(Identifier.of("yawp", FLAG_ID));
+        Identifier flagId = Identifier.of("yawp", FLAG_ID);
+        FlagRegister.registerFlag(flagId, meta);
+        SAFARI_FLAG = FlagRegister.getFlag(flagId);
     }
 
     public static Boolean checkFlag(Entity target, Entity attacker) {
