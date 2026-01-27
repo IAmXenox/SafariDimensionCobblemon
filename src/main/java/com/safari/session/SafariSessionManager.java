@@ -336,23 +336,35 @@ public class SafariSessionManager {
                         if (player.hasPermissionLevel(2)) {
                             continue;
                         }
+
+                        // Teleport players back if they are in the Safari dimension without a session
+                        double targetX, targetY, targetZ;
+                        float targetYaw, targetPitch;
+                        ServerWorld targetWorld;
+
                         LastKnownPos lastKnown = lastKnownPositions.get(uuid);
-                        ServerWorld returnWorld = lastKnown != null
-                                ? server.getWorld(lastKnown.dimension())
-                                : server.getWorld(World.OVERWORLD);
-                        if (returnWorld != null) {
-                            BlockPos returnPos = lastKnown != null
-                                    ? findSafeExitPos(returnWorld, lastKnown.pos())
-                                    : returnWorld.getSpawnPos();
-                            float returnYaw = lastKnown != null ? lastKnown.yaw() : player.getYaw();
-                            float returnPitch = lastKnown != null ? lastKnown.pitch() : player.getPitch();
-                            player.teleport(returnWorld,
-                                    returnPos.getX(),
-                                    returnPos.getY(),
-                                    returnPos.getZ(),
-                                    returnYaw,
-                                    returnPitch
-                            );
+                        if (lastKnown != null) {
+                            targetWorld = server.getWorld(lastKnown.dimension());
+                            if (targetWorld == null) targetWorld = server.getWorld(World.OVERWORLD);
+                            
+                            BlockPos safePos = findSafeExitPos(targetWorld, lastKnown.pos());
+                            targetX = safePos.getX() + 0.5;
+                            targetY = safePos.getY();
+                            targetZ = safePos.getZ() + 0.5;
+                            targetYaw = lastKnown.yaw();
+                            targetPitch = lastKnown.pitch();
+                        } else {
+                            targetWorld = server.getWorld(World.OVERWORLD);
+                            BlockPos spawnPos = targetWorld.getSpawnPos();
+                            targetX = spawnPos.getX() + 0.5;
+                            targetY = spawnPos.getY();
+                            targetZ = spawnPos.getZ() + 0.5;
+                            targetYaw = 0;
+                            targetPitch = 0;
+                        }
+
+                        if (targetWorld != null) {
+                            player.teleport(targetWorld, targetX, targetY, targetZ, targetYaw, targetPitch);
                             player.sendMessage(Text.translatable("message.safari.cant_teleport").formatted(Formatting.RED), false);
                         }
                     }

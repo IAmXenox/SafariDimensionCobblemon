@@ -3,6 +3,7 @@
 ## 0.0.11
 - **Bug Fix:** Missed Safari Balls now correctly drop as the modded item (`safari:safari_ball`) instead of the standard Cobblemon one.
 - **Battle Restriction:** Prevented battles from being initiated within the Safari Zone (no more launching Pokémon at wild ones). Added a fallback to immediately end any battle that somehow starts in the Safari dimension.
+- **Session Security:** Players found in the Safari dimension without an active session (and not an OP) are now automatically teleported back to their last known safe position or world spawn.
 - **NPC AI Update:** Safari Guide and Safari Keeper are now stationary and will smoothly look at nearby players.
 - **Permissions:** Restricted NPC renaming with Name Tags to Operators (level 2+) only.
 - **Localization:** Added full translation support for all new messages and visibility modes.
