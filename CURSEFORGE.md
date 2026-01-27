@@ -9,6 +9,7 @@ any bugs report on :  https://discord.gg/zxZXcaTHwe
 - Safari Ball item with Cobblemon throw physics and sounds (automatic retrieval on miss).
 - 3D render for Safari Ball when held in hand.
 - No send‑out inside Safari (prevents battles/launching Pokémon).
+- Automatic battle termination if a battle is started in the Safari dimension.
 - No damage + no block breaking/placing inside Safari (creative only for building).
 - Only Safari Balls can be used in Safari.
 - Day/Night cycle synchronized with the Overworld.

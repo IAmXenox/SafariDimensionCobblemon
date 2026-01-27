@@ -8,6 +8,7 @@ Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a dedicated Safari di
 - **Portal frame** block (Nether‑style size detection) lit by flint & steel.
 - **Safari Ball item** (`safari:safari_ball`) with Cobblemon throw physics and sounds.
 - **No send‑out** inside Safari (prevents battles).
+- **Auto-end battles** if they are somehow triggered in the Safari dimension.
 - **No damage** inside Safari; block breaking/placing is **creative‑only**.
 - **Only Safari Balls** can be used in Safari.
 - **Safari Guide NPC** with a shop for balls and time tickets.
