@@ -32,18 +32,23 @@ public class YawpIntegration {
         
         PlayerEntity player = (attacker instanceof PlayerEntity p) ? p : null;
         
-        // Evaluate the flag at the target's position
-        FlagCheckRequest request = new FlagCheckRequest(
-            target.getBlockPos(), 
-            null, 
-            world.getRegistryKey(), 
-            player,
-            SAFARI_FLAG.id().toString() 
-        );
-        
-        FlagState state = FlagEvaluator.evaluate(request).getFlagState();
-        if (state == FlagState.ALLOWED) return true;
-        if (state == FlagState.DENIED) return false;
+        try {
+            // Evaluate the flag at the target's position
+            FlagCheckRequest request = new FlagCheckRequest(
+                target.getBlockPos(), 
+                null, 
+                world.getRegistryKey(), 
+                player,
+                SAFARI_FLAG.id().toString() 
+            );
+            
+            FlagState state = FlagEvaluator.evaluate(request).getFlagState();
+            if (state == FlagState.ALLOWED) return true;
+            if (state == FlagState.DENIED) return false;
+        } catch (Exception e) {
+            // Level might not be tracked by YAWP, return null to use default behavior
+            return null;
+        }
         return null;
     }
 }
