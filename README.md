@@ -19,6 +19,8 @@ Custom Minecraft 1.21.1 Fabric mod for Cobblemon that adds a dedicated Safari di
 - **Day/Night synchronization** with the Overworld.
 - **3D Render** for Safari Balls when held in hand.
 - **Shop UI** shows your Pokédollar balance and offers 16/32/64 ball bundles.
+- **Stationary NPCs** that look at nearby players instead of wandering.
+- **OP-only NPC renaming** to prevent unauthorized changes.
 - **World border** configurable size, centered on spawn point.
 - **Config file** stored in the main `config` folder.
 

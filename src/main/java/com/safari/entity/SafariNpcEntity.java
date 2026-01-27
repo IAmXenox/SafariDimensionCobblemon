@@ -4,6 +4,7 @@ import com.safari.world.SafariDimension;
 import com.safari.item.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -115,7 +116,7 @@ public class SafariNpcEntity extends PathAwareEntity {
 
     @Override
     protected void initGoals() {
-        this.goalSelector.add(0, new SmoothLookGoal(this));
+        this.goalSelector.add(0, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
     }
 
     @Override
@@ -144,20 +145,27 @@ public class SafariNpcEntity extends PathAwareEntity {
                 int next = (current + 1) % 3;
                 setNameVisibility(next);
                 
-                String modeName = switch (next) {
-                    case NAME_MODE_HOVER -> "Hover Only";
-                    case NAME_MODE_ALWAYS -> "Always Visible";
-                    case NAME_MODE_NEVER -> "Never Visible";
+                String modeKey = switch (next) {
+                    case NAME_MODE_HOVER -> "message.safari.visibility.hover";
+                    case NAME_MODE_ALWAYS -> "message.safari.visibility.always";
+                    case NAME_MODE_NEVER -> "message.safari.visibility.never";
                     default -> "Unknown";
                 };
-                player.sendMessage(Text.literal("Name Visibility: " + modeName).formatted(net.minecraft.util.Formatting.YELLOW), true);
+                player.sendMessage(Text.translatable("message.safari.name_visibility", Text.translatable(modeKey)).formatted(net.minecraft.util.Formatting.YELLOW), true);
             }
             return ActionResult.SUCCESS;
         }
 
-        // 2. Name Tag Renaming (Sneak + Right Click)
+        // 2. Name Tag Renaming (Sneak + Right Click) - OP only
         if (stack.getItem() == Items.NAME_TAG && player.isSneaking()) {
-            return ActionResult.PASS; // Let vanilla handle it
+            if (player.hasPermissionLevel(2)) {
+                return ActionResult.PASS; // Let vanilla handle it
+            } else {
+                if (!this.getWorld().isClient) {
+                    player.sendMessage(Text.translatable("message.safari.only_ops_rename").formatted(net.minecraft.util.Formatting.RED), true);
+                }
+                return ActionResult.SUCCESS; // Consume to prevent renaming
+            }
         }
 
         // 3. Shop Interaction
@@ -193,33 +201,18 @@ public class SafariNpcEntity extends PathAwareEntity {
 
     private static final class SmoothLookGoal extends Goal {
         private final SafariNpcEntity npc;
-        private int cooldown;
 
         private SmoothLookGoal(SafariNpcEntity npc) {
             this.npc = npc;
-            this.setControls(EnumSet.of(Control.LOOK));
         }
 
         @Override
         public boolean canStart() {
-            return true;
+            return false;
         }
 
         @Override
         public void tick() {
-            if (cooldown > 0) {
-                cooldown--;
-                return;
-            }
-
-            PlayerEntity target = npc.getWorld().getClosestPlayer(npc, 8.0);
-            if (target == null) {
-                return;
-            }
-
-            Vec3d targetPos = target.getPos();
-            npc.getLookControl().lookAt(targetPos.x, targetPos.y + target.getStandingEyeHeight(), targetPos.z, 12.0f, 12.0f);
-            cooldown = 8;
         }
     }
 }

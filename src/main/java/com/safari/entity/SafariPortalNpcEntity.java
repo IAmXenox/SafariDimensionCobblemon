@@ -102,9 +102,7 @@ public class SafariPortalNpcEntity extends PathAwareEntity {
     @Override
     protected void initGoals() {
         // Basic AI goals
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
-        this.goalSelector.add(2, new LookAroundGoal(this));
+        this.goalSelector.add(0, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
     }
 
     public static DefaultAttributeContainer.Builder createNpcAttributes() {
@@ -125,20 +123,27 @@ public class SafariPortalNpcEntity extends PathAwareEntity {
                 int next = (current + 1) % 3;
                 setNameVisibility(next);
                 
-                String modeName = switch (next) {
-                    case NAME_MODE_HOVER -> "Hover Only";
-                    case NAME_MODE_ALWAYS -> "Always Visible";
-                    case NAME_MODE_NEVER -> "Never Visible";
+                String modeKey = switch (next) {
+                    case NAME_MODE_HOVER -> "message.safari.visibility.hover";
+                    case NAME_MODE_ALWAYS -> "message.safari.visibility.always";
+                    case NAME_MODE_NEVER -> "message.safari.visibility.never";
                     default -> "Unknown";
                 };
-                player.sendMessage(Text.literal("Name Visibility: " + modeName).formatted(Formatting.YELLOW), true);
+                player.sendMessage(Text.translatable("message.safari.name_visibility", Text.translatable(modeKey)).formatted(Formatting.YELLOW), true);
             }
             return ActionResult.SUCCESS;
         }
 
-        // 2. Name Tag
+        // 2. Name Tag - OP only
         if (stack.getItem() == Items.NAME_TAG && player.isSneaking()) {
-            return ActionResult.PASS;
+            if (player.hasPermissionLevel(2)) {
+                return ActionResult.PASS;
+            } else {
+                if (!this.getWorld().isClient) {
+                    player.sendMessage(Text.translatable("message.safari.only_ops_rename").formatted(Formatting.RED), true);
+                }
+                return ActionResult.SUCCESS;
+            }
         }
 
         // 3. Command Interaction (Main Hand)

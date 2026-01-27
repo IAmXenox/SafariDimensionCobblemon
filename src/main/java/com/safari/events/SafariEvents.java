@@ -24,12 +24,27 @@ import net.minecraft.util.math.Direction;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import net.minecraft.block.NetherPortalBlock;
 
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
+
 public class SafariEvents {
 
     public static void init() {
-        // 1. Setup Safari Entity Logic (Level scaling for Cobblemon)
+        // 1. Setup Safari Entity Logic (Level scaling for Cobblemon) & Item Drops
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (!world.getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) return;
+            
+            // Handle ItemEntity drops
+            if (entity instanceof ItemEntity itemEntity) {
+                ItemStack stack = itemEntity.getStack();
+                Identifier itemId = Registries.ITEM.getId(stack.getItem());
+                // Replace Cobblemon safari ball with our custom one
+                if ("cobblemon".equals(itemId.getNamespace()) && itemId.getPath().equals("safari_ball")) {
+                    itemEntity.setStack(new ItemStack(ModItems.SAFARI_BALL, stack.getCount()));
+                }
+                return;
+            }
+
             if (entity.isPlayer()) return;
 
             // Defer check

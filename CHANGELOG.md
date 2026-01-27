@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.11
+- **Bug Fix:** Missed Safari Balls now correctly drop as the modded item (`safari:safari_ball`) instead of the standard Cobblemon one.
+- **Battle Restriction:** Prevented battles from being initiated within the Safari Zone (no more launching Pokémon at wild ones).
+- **NPC AI Update:** Safari Guide and Safari Keeper are now stationary and will smoothly look at nearby players.
+- **Permissions:** Restricted NPC renaming with Name Tags to Operators (level 2+) only.
+- **Localization:** Added full translation support for all new messages and visibility modes.
+- **Maintenance:** Updated dependency to Cobblemon Economy 0.0.12.
+
 ## 0.0.10
 - Added NPC Name Toggler feature (`/safari npcnametoggler`) to cycle NPC name visibility (Hover, Always, Never).
 - Updated Safari Guide and Safari Portal NPC to support name visibility persistence.

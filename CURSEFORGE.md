@@ -6,14 +6,15 @@ any bugs report on :  https://discord.gg/zxZXcaTHwe
 
 - Custom Safari biome (sparse jungle style).
 - Nether‑style portal frame (custom block) + flint & steel ignition.
-- Safari Ball item with Cobblemon throw physics and sounds.
+- Safari Ball item with Cobblemon throw physics and sounds (automatic retrieval on miss).
 - 3D render for Safari Ball when held in hand.
-- No send‑out inside Safari (prevents battles).
+- No send‑out inside Safari (prevents battles/launching Pokémon).
 - No damage + no block breaking/placing inside Safari (creative only for building).
 - Only Safari Balls can be used in Safari.
 - Day/Night cycle synchronized with the Overworld.
-- Safari Guide NPC with shop for balls and time tickets.
+- Safari Guide NPC with shop for balls and time tickets (now stationary and smooth looking).
 - NPCs are non-pushable by players or entities.
+- OP-only NPC renaming with Name Tags.
 - Thanks Aerendil for the Safari Portal NPC.
 - Session resumes on reconnect with remaining time.
 - Entry warning title reminds you time is lost on exit.
