@@ -26,10 +26,25 @@ import net.minecraft.block.NetherPortalBlock;
 
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
 public class SafariEvents {
 
     public static void init() {
+        // 0. End battles in Safari immediately
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                if (isInSafari(player)) {
+                    PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+                    if (battle != null && !battle.getEnded()) {
+                        battle.end();
+                    }
+                }
+            }
+        });
+
         // 1. Setup Safari Entity Logic (Level scaling for Cobblemon) & Item Drops
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (!world.getRegistryKey().equals(SafariDimension.SAFARI_DIM_KEY)) return;
