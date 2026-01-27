@@ -13,6 +13,9 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -23,6 +26,8 @@ public class SafariCommand {
             .then(CommandManager.literal("enter").executes(SafariCommand::enter))
             .then(CommandManager.literal("leave").executes(SafariCommand::leave))
             .then(CommandManager.literal("info").executes(SafariCommand::info))
+            .then(CommandManager.literal("npcnametoggler").requires(source -> source.hasPermissionLevel(2))
+                .executes(SafariCommand::giveNameToggler))
             .then(CommandManager.literal("buy")
                 .then(CommandManager.literal("balls")
                     .then(CommandManager.literal("16").executes(ctx -> buyBalls(ctx, 16)))
@@ -51,6 +56,19 @@ public class SafariCommand {
         );
     }
 
+
+    private static int giveNameToggler(CommandContext<ServerCommandSource> ctx) {
+        try {
+            ServerPlayerEntity player = ctx.getSource().getPlayerOrThrow();
+            ItemStack stack = new ItemStack(Items.FEATHER);
+            stack.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("item.safari.name_toggler").formatted(Formatting.AQUA, Formatting.BOLD));
+            player.getInventory().insertStack(stack);
+            ctx.getSource().sendMessage(Text.translatable("message.safari.given_toggler").formatted(Formatting.GREEN));
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
     private static int enter(CommandContext<ServerCommandSource> ctx) {
         try {

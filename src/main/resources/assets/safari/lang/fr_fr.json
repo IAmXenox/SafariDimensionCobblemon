@@ -49,6 +49,8 @@
   "message.safari.capture_success": "Pokemon capture !",
   "message.safari.capture_fail": "Il s'est echappe !",
   "message.safari.capture_error": "Erreur pendant la capture : %s",
+  "message.safari.given_toggler": "Outil de Nom PNJ donne.",
+  "item.safari.name_toggler": "Outil Nom PNJ",
   "entity.safari.safari_npc": "Guide Safari",
   "entity.safari.safari_portal_npc": "Gardien Safari",
   "biome.safari.safari_biome": "Biome Safari",

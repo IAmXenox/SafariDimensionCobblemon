@@ -27,15 +27,69 @@ import net.minecraft.world.ServerWorldAccess;
 
 import java.util.EnumSet;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+
 public class SafariNpcEntity extends PathAwareEntity {
+    private static final TrackedData<Integer> NAME_VISIBILITY = DataTracker.registerData(SafariNpcEntity.class, TrackedDataHandlerRegistry.INTEGER);
+
+    public static final int NAME_MODE_HOVER = 0;
+    public static final int NAME_MODE_ALWAYS = 1;
+    public static final int NAME_MODE_NEVER = 2;
+
     public SafariNpcEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
-        this.setCustomName(Text.translatable("entity.safari.safari_npc"));
-        this.setCustomNameVisible(true);
+        // Default: No Name, Rename via Name Tag
         this.setPersistent();
         applyHeldItems();
         this.setCanPickUpLoot(false);
     }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(NAME_VISIBILITY, NAME_MODE_HOVER); // Default to Hover
+    }
+
+    public int getNameVisibility() {
+        return this.dataTracker.get(NAME_VISIBILITY);
+    }
+
+    public void setNameVisibility(int mode) {
+        this.dataTracker.set(NAME_VISIBILITY, mode);
+        if (mode == NAME_MODE_ALWAYS) {
+            this.setCustomNameVisible(true);
+        } else {
+            this.setCustomNameVisible(false); // Valid for Hover (handled by logic) and Never
+        }
+    }
+
+    @Override
+    public boolean shouldRenderName() {
+        if (getNameVisibility() == NAME_MODE_NEVER) {
+            return false;
+        }
+        return super.shouldRenderName();
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("NameVisibility", getNameVisibility());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("NameVisibility")) {
+            setNameVisibility(nbt.getInt("NameVisibility"));
+        }
+    }
+
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData) {
@@ -81,6 +135,32 @@ public class SafariNpcEntity extends PathAwareEntity {
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+        
+        // 1. Name Toggler
+        if (stack.getItem() == Items.FEATHER && stack.contains(DataComponentTypes.CUSTOM_NAME) && stack.getName().getString().contains("Name Toggler")) {
+            if (!this.getWorld().isClient) {
+                int current = getNameVisibility();
+                int next = (current + 1) % 3;
+                setNameVisibility(next);
+                
+                String modeName = switch (next) {
+                    case NAME_MODE_HOVER -> "Hover Only";
+                    case NAME_MODE_ALWAYS -> "Always Visible";
+                    case NAME_MODE_NEVER -> "Never Visible";
+                    default -> "Unknown";
+                };
+                player.sendMessage(Text.literal("Name Visibility: " + modeName).formatted(net.minecraft.util.Formatting.YELLOW), true);
+            }
+            return ActionResult.SUCCESS;
+        }
+
+        // 2. Name Tag Renaming (Sneak + Right Click)
+        if (stack.getItem() == Items.NAME_TAG && player.isSneaking()) {
+            return ActionResult.PASS; // Let vanilla handle it
+        }
+
+        // 3. Shop Interaction
         if (!this.getWorld().isClient && player instanceof ServerPlayerEntity serverPlayer) {
             serverPlayer.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                     (syncId, inv, user) -> new SafariShopScreenHandler(syncId, inv),

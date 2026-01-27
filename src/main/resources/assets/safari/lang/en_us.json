@@ -49,6 +49,8 @@
   "message.safari.capture_success": "You caught the Pokemon!",
   "message.safari.capture_fail": "It broke free!",
   "message.safari.capture_error": "Error processing capture: %s",
+  "message.safari.given_toggler": "Given NPC Name Toggler tool.",
+  "item.safari.name_toggler": "NPC Name Toggler",
   "entity.safari.safari_npc": "Safari Guide",
   "entity.safari.safari_portal_npc": "Safari Keeper",
   "biome.safari.safari_biome": "Safari Biome",

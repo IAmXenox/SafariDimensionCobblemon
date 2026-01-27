@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.10
+- Added NPC Name Toggler feature (`/safari npcnametoggler`) to cycle NPC name visibility (Hover, Always, Never).
+- Updated Safari Guide and Safari Portal NPC to support name visibility persistence.
+
 ## 0.0.9
 - Implemented Hybrid 2D/3D Safari Ball rendering (2D icon in GUI/hotbar, 3D model in hand).
 - Fixed Safari Ball 3D model texture using `cobblemon:item/poke_ball_model` parent and official textures.
