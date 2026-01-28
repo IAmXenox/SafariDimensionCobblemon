@@ -25,6 +25,8 @@ Purpose: enable safe, predictable changes to the Safari Dimension mod. This docu
 - Registry IDs for items, blocks, entities, and dimension must remain stable.
 
 ## Change checklist
+- If you create a commit: include the current working version in the commit message (e.g., "[0.0.11] ...").
+- Default workflow expectation: commit and push changes after completion. If tooling rules require explicit user confirmation to commit/push, ask for that confirmation before doing so.
 - If you add config fields: update defaults in `SafariConfig`, normalize in `normalizeDefaults`, and ensure rewrites are safe.
 - If you add player-facing text: update `src/main/resources/assets/safari/lang/en_us.json` and `src/main/resources/assets/safari/lang/fr_fr.json`.
 - If you add mixins: update `src/main/resources/safari.mixins.json` and verify remap settings for Cobblemon targets.

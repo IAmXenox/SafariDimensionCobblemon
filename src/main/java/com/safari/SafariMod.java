@@ -44,6 +44,7 @@ public class SafariMod implements ModInitializer {
         // 4. Register Events & Dimension
         com.safari.world.SafariDimension.init();
         com.safari.events.SafariEvents.init();
+        com.safari.network.SafariHandshake.initServer();
         
         // 5. Register Blocks & Items
         com.safari.block.SafariBlocks.registerModBlocks();

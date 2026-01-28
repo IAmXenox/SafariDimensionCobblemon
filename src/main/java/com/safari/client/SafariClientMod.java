@@ -18,8 +18,13 @@ public class SafariClientMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        com.safari.network.SafariHandshake.initClient();
         EntityRendererRegistry.register(SafariEntities.SAFARI_NPC, (EntityRendererFactory.Context context) ->
-                new MobEntityRenderer<>(context, new BipedEntityModel<>(context.getPart(EntityModelLayers.PLAYER)), 0.5f) {
+                new MobEntityRenderer<SafariNpcEntity, BipedEntityModel<SafariNpcEntity>>(
+                        context,
+                        new BipedEntityModel<>(context.getPart(EntityModelLayers.PLAYER)),
+                        0.5f
+                ) {
                     @Override
                     public Identifier getTexture(SafariNpcEntity entity) {
                         return NPC_TEXTURE;
@@ -27,7 +32,11 @@ public class SafariClientMod implements ClientModInitializer {
                 }
         );
         EntityRendererRegistry.register(SafariEntities.SAFARI_PORTAL_NPC, (EntityRendererFactory.Context context) ->
-                new MobEntityRenderer<>(context, new BipedEntityModel<>(context.getPart(EntityModelLayers.PLAYER)), 0.5f) {
+                new MobEntityRenderer<SafariPortalNpcEntity, BipedEntityModel<SafariPortalNpcEntity>>(
+                        context,
+                        new BipedEntityModel<>(context.getPart(EntityModelLayers.PLAYER)),
+                        0.5f
+                ) {
                     @Override
                     public Identifier getTexture(SafariPortalNpcEntity entity) {
                         return NPC_TEXTURE;
