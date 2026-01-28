@@ -47,6 +47,8 @@
   "message.safari.ball_constructor_missing": "Erreur interne : constructeur de ball introuvable.",
   "message.safari.internal_error": "Erreur interne : %s",
   "message.safari.ball_missing": "Attention : Safari Ball configuree (%s) introuvable. Utilisation des Poke Balls.",
+  "message.safari.handshake_missing": "Mod Safari requis (version serveur : %s).",
+  "message.safari.handshake_mismatch": "Version du mod Safari incompatible. Serveur : %s, Client : %s.",
   "message.safari.capture_success": "Pokemon capture !",
   "message.safari.capture_fail": "Il s'est echappe !",
   "message.safari.capture_error": "Erreur pendant la capture : %s",
