@@ -11,3 +11,8 @@ out/
 .factorypath
 .project
 .settings/
+bin/
+.classpath
+.factorypath
+.project
+.settings/
