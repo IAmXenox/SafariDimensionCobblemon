@@ -7,7 +7,10 @@
 - **NPC AI Update:** Safari Guide and Safari Keeper are now stationary and will smoothly look at nearby players.
 - **Permissions:** Restricted NPC renaming with Name Tags to Operators (level 2+) only.
 - **Localization:** Added full translation support for all new messages and visibility modes.
-- **Maintenance:** Updated dependency to Cobblemon Economy 0.0.12.
+- **Handshake:** Clients must match the server mod version on join; mismatches are disconnected with a clear message.
+- **Gameplay:** Boats can be broken in the Safari (other entity attacks remain blocked).
+- **Fix:** `/safari reload` no longer corrupts the config path on repeated reloads.
+- **Maintenance:** Updated dependency to Cobblemon Economy 0.0.13.
 
 ## 0.0.10
 - Added NPC Name Toggler feature (`/safari npcnametoggler`) to cycle NPC name visibility (Hover, Always, Never).
